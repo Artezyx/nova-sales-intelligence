@@ -1,0 +1,107 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+____________________________ test_full_browser_flow ____________________________
+
+live = 'http://127.0.0.1:60085'
+browser = <Browser type=<BrowserType name=chromium executable_path=/home/oai/.cache/ms-playwright/chromium-1200/chrome-linux64/chrome> version=144.0.7559.96>
+
+    def test_full_browser_flow(live,browser):
+>       page=browser.new_page(viewport={'width':1366,'height':900});errors=[];page.on('pageerror',lambda e: errors.append(str(e)));sign_in(page,live)
+                                                                                                                                   ^^^^^^^^^^^^^^^^^^
+
+tests/test_browser.py:32: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_browser.py:29: in sign_in
+    page.goto(live);page.get_by_label('Correo electrónico').fill('manager@nova.example');page.get_by_label('Contraseña').fill(PASS);page.get_by_role('button',name='Iniciar sesión').click();expect(page.locator('#metrics')).to_contain_text('Prospectos')
+    ^^^^^^^^^^^^^^^
+/opt/pyvenv/lib/python3.13/site-packages/playwright/sync_api/_generated.py:9050: in goto
+    self._sync(
+/opt/pyvenv/lib/python3.13/site-packages/playwright/_impl/_page.py:552: in goto
+    return await self._main_frame.goto(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/pyvenv/lib/python3.13/site-packages/playwright/_impl/_frame.py:153: in goto
+    await self._channel.send(
+/opt/pyvenv/lib/python3.13/site-packages/playwright/_impl/_connection.py:69: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x7fb422fd9550>
+cb = <function Channel.send.<locals>.<lambda> at 0x7fb422463c40>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        st: List[inspect.FrameInfo] = getattr(
+            task, "__pw_stack__", None
+        ) or inspect.stack(0)
+    
+        parsed_st = _extract_stack_trace_information_from_stack(st, is_internal, title)
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.Error: Page.goto: net::ERR_BLOCKED_BY_ADMINISTRATOR at http://127.0.0.1:60085/
+E           Call log:
+E             - navigating to "http://127.0.0.1:60085/", waiting until "load"
+
+/opt/pyvenv/lib/python3.13/site-packages/playwright/_impl/_connection.py:559: Error
+________________________ test_mobile_and_invalid_login _________________________
+
+live = 'http://127.0.0.1:60085'
+browser = <Browser type=<BrowserType name=chromium executable_path=/home/oai/.cache/ms-playwright/chromium-1200/chrome-linux64/chrome> version=144.0.7559.96>
+
+    def test_mobile_and_invalid_login(live,browser):
+>       page=browser.new_page(viewport={'width':390,'height':844},is_mobile=True,has_touch=True);page.goto(live);page.get_by_label('Correo electrónico').fill('manager@nova.example');page.get_by_label('Contraseña').fill('incorrect');page.get_by_role('button',name='Iniciar sesión').click();expect(page.locator('#login-error')).to_contain_text('Credenciales inválidas');sign_in(page,live);page.get_by_role('button',name='Prospectos').click();expect(page.locator('#lead-rows')).to_contain_text('Prospecto Alfa');assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth');page.close()
+                                                                                                 ^^^^^^^^^^^^^^^
+
+tests/test_browser.py:38: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/pyvenv/lib/python3.13/site-packages/playwright/sync_api/_generated.py:9050: in goto
+    self._sync(
+/opt/pyvenv/lib/python3.13/site-packages/playwright/_impl/_page.py:552: in goto
+    return await self._main_frame.goto(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/pyvenv/lib/python3.13/site-packages/playwright/_impl/_frame.py:153: in goto
+    await self._channel.send(
+/opt/pyvenv/lib/python3.13/site-packages/playwright/_impl/_connection.py:69: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x7fb422fcf890>
+cb = <function Channel.send.<locals>.<lambda> at 0x7fb422183e20>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        st: List[inspect.FrameInfo] = getattr(
+            task, "__pw_stack__", None
+        ) or inspect.stack(0)
+    
+        parsed_st = _extract_stack_trace_information_from_stack(st, is_internal, title)
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.Error: Page.goto: net::ERR_BLOCKED_BY_ADMINISTRATOR at http://127.0.0.1:60085/
+E           Call log:
+E             - navigating to "http://127.0.0.1:60085/", waiting until "load"
+
+/opt/pyvenv/lib/python3.13/site-packages/playwright/_impl/_connection.py:559: Error
+=========================== short test summary info ============================
+FAILED tests/test_browser.py::test_full_browser_flow - playwright._impl._errors.Error: Page.goto: net::ERR_BLOCKED_BY_ADMINISTRATOR at http://127.0.0.1:60085/
+Call log:
+  - navigating to "http://127.0.0.1:60085/", waiting until "load"
+FAILED tests/test_browser.py::test_mobile_and_invalid_login - playwright._impl._errors.Error: Page.goto: net::ERR_BLOCKED_BY_ADMINISTRATOR at http://127.0.0.1:60085/
+Call log:
+  - navigating to "http://127.0.0.1:60085/", waiting until "load"
+2 failed in 2.22s

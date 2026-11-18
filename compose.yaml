@@ -1,0 +1,24 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: nova
+      POSTGRES_USER: nova
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Define POSTGRES_PASSWORD}
+    volumes: [nova-db:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nova"]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+  app:
+    build: .
+    ports: ["127.0.0.1:8000:8000"]
+    environment:
+      NOVA_SECRET: ${NOVA_SECRET:?Define NOVA_SECRET}
+      DATABASE_URL: ${NOVA_DATABASE_URL:?Define NOVA_DATABASE_URL}
+    depends_on:
+      db:
+        condition: service_healthy
+volumes:
+  nova-db:
